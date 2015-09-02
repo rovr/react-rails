@@ -13,11 +13,20 @@ module React
     # to provide your own transformer. It must implement:
     # - #initialize(options)
     # - #transform(code) => new code
-    self.transformer_class = DEFAULT_TRANSFORMER
+    class << self
+      transformer_class = DEFAULT_TRANSFORMER
 
-    def self.transform(code)
-      self.transformer ||= transformer_class.new(transform_options)
-      self.transformer.transform(code)
+      def transform(code)
+        transformer.transform(code)
+      end
+
+      def call(code)
+        transformer.transform(code[:data])
+      end
+
+      def transformer
+        transformer ||= transformer_class.new(transform_options)
+      end
     end
   end
 end
